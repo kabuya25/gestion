@@ -113,13 +113,16 @@ export default function Example() {
                                     End at
                                 </th>
                                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                    discipline
+                                    Discipline
                                 </th>
                                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                    teacher
+                                    Teacher
                                 </th>
                                 <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
-                                    room
+                                    Room
+                                </th>
+                                <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">
+                                    Remaining reservations
                                 </th>
 
                                 <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-0">
@@ -137,13 +140,15 @@ export default function Example() {
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{clas.discipline}</td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{clas.teacher}</td>
                                     <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{clas.room}</td>
+                                    <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{clas.capacity}</td>
                                     <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
-                                        <div
+                                        <button
+                                            disabled={ clas.capacity <= 0 }
                                             className="text-indigo-600 hover:text-indigo-900"
                                             onClick={() => {submit_class(clas.class_id)}}
                                         >
-                                            {clas.is_joined ? "Cancel" : "Join"}
-                                        </div>
+                                            {clas.is_joined ? "Cancel" : clas.capacity <= 0 ? "Full" : "Join"}
+                                        </button>
                                     </td>
                                 </tr>
                             )) : null}

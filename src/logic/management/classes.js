@@ -59,6 +59,7 @@ export const get_classes_join = async () => {
                 FROM_UNIXTIME(time / 1000, '%H:%i %d/%m/%Y') AS time,
                 TRIM(BOTH "\'" FROM room.name) as room,
                 TRIM(BOTH "\'" FROM discipline.name) AS discipline,
+                (room.capacity  - COUNT(bernair.reservation.reservation_id)) AS capacity,
                 CONCAT(TRIM(BOTH "\'" FROM teacher.lastname), " ",
                        TRIM(BOTH "\'" FROM teacher.firstname)) AS teacher,
                 (reservation.id_client = ?) AS is_joined
@@ -265,9 +266,8 @@ export const add_class = async (data) => {
     try{
         session = await database()
         await session.beginTransaction()
-        await session.query(`SELECT * FROM bernair.teacher FOR UPDATE`, [])
-        await session.query(`SELECT * FROM bernair.discipline FOR UPDATE`, [])
-        await session.query(`SELECT * FROM bernair.room FOR UPDATE`, [])
+        await session.query(`SELECT * FROM bernair.teaching WHERE id_teacher=? FOR UPDATE`, [teacher_id])
+        await session.query(`SELECT * FROM bernair.discipline WHERE discipline_id=? FOR UPDATE`, [discipline_id])
 
         const [overlaping] = await session.query(`
             SELECT 
@@ -275,14 +275,18 @@ export const add_class = async (data) => {
             FROM bernair.classes 
             JOIN bernair.room 
                 ON classes.id_room = room.room_id
+            JOIN bernair.teacher 
+                ON classes.id_teacher = teacher.teacher_id
             WHERE 
-                ((time<=? AND (time + classes.class_length * 60000)>=?) OR (time<=? AND (time + classes.class_length * 60000)>=?)) AND room.room_id=? LIMIT 1`,
+                ((time<=? AND (time + classes.class_length * 60000)>=?) OR (time<=? AND (time + classes.class_length * 60000)>=?)) 
+              AND (room.room_id=? || teacher.teacher_id=? ) LIMIT 1 FOR UPDATE`,
             [
                 class_data.datetime,
                 class_data.datetime,
                 class_data.datetime + class_data.length * 60000,
                 class_data.datetime + class_data.length * 60000,
-                class_data.room_id
+                class_data.room_id,
+                teacher_id
             ])
 
         console.log(overlaping)
@@ -352,9 +356,8 @@ export const edit_class = async (data) => {
     try{
         session = await database()
         await session.beginTransaction()
-        await session.query(`SELECT * FROM bernair.teacher FOR UPDATE`, [])
-        await session.query(`SELECT * FROM bernair.discipline FOR UPDATE`, [])
-        await session.query(`SELECT * FROM bernair.room FOR UPDATE`, [])
+        await session.query(`SELECT * FROM bernair.teaching WHERE id_teacher=? FOR UPDATE`, [teacher_id])
+        await session.query(`SELECT * FROM bernair.discipline WHERE discipline_id=? FOR UPDATE`, [discipline_id])
 
         const [overlaping] = await session.query(`
             SELECT 
