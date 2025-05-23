@@ -48,7 +48,7 @@ export default function Example(props) {
                                                     >
                                                         <option value="">Room</option>
                                                         {props.add_list_rooms.length > 0 ? props.add_list_rooms.map((room) =>
-                                                            <option key={room.room_id} value={room.room_id}>{room.name.slice(1,-1)}</option>
+                                                            <option key={room.room_id} value={room.room_id}>{room.name}</option>
                                                         ) : null}
                                                     </select>
                                                 </div>
@@ -75,7 +75,7 @@ export default function Example(props) {
                                                     >
                                                         <option key={-1} value={""}>Teacher</option>
                                                         {props.add_list_teachers.length > 0 ? props.add_list_teachers.map((teacher) =>
-                                                            <option key={teacher.teacher_id} value={teacher.teacher_id}>{teacher.teacher_name.slice(1,-1)}</option>
+                                                            <option key={teacher.teacher_id} value={teacher.teacher_id}>{teacher.teacher}</option>
                                                         ) : null}
                                                     </select>
                                                 </div>
@@ -102,7 +102,7 @@ export default function Example(props) {
                                                     >
                                                         <option key={-1} value={""}>Discipline</option>
                                                         {props.add_list_disciplines.length > 0 ? props.add_list_disciplines.map((discipline) =>
-                                                            <option key={discipline.discipline_id} value={discipline.discipline_id}>{discipline.name.slice(1,-1)}</option>
+                                                            <option key={discipline.discipline_id} value={discipline.discipline_id}>{discipline.name}</option>
                                                         ) : null}
                                                     </select>
                                                 </div>

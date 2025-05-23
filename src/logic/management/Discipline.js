@@ -21,7 +21,6 @@ export const adding_discipline = async (data) => {
     try{
         session = await database()
         await session.beginTransaction()
-        await session.query("LOCK TABLES discipline WRITE")
         await session.query(`INSERT INTO bernair.discipline(name) VALUES(?)`, [name])
         await session.commit();
 
@@ -65,7 +64,7 @@ export const editing_discipline = async (data) => {
     try{
         session = await database()
         await session.beginTransaction()
-        session.query("LOCK TABLES discipline WRITE")
+        session.query("SELECT * FROM bernair.discipline WHERE discipline_id=? FOR UPDATE", [discipline_id])
         await session.query(`UPDATE bernair.discipline SET name=? WHERE discipline_id=?`, [name, discipline_id])
         await session.commit();
 
@@ -102,7 +101,6 @@ export const deleting_discipline = async (id) => {
     try{
         session = await database()
         await session.beginTransaction()
-        session.query("LOCK TABLES discipline WRITE")
         await session.query(`DELETE FROM bernair.discipline WHERE discipline_id=?`, [id])
         await session.commit();
 
@@ -129,7 +127,7 @@ export const get_disciplines = async () => {
     try{
         session = await database()
         const [row] = await session.query(`SELECT discipline_id, TRIM(BOTH "\'" FROM name) AS name FROM bernair.discipline ORDER BY name`)
-
+        console.log(row)
         return row
     } catch (e) {
         console.log(e)
@@ -147,7 +145,7 @@ export const get_discipline_list_teacher = async (id) => {
 
     const teacher_id = id
 
-    if(!parseInt(data.get(teacher_id))){
+    if(!parseInt(teacher_id)){
         return false
     }
     let session
@@ -166,6 +164,7 @@ export const get_discipline_list_teacher = async (id) => {
             WHERE t.teacher_id = ?
         `,[teacher_id])
 
+        console.log(rows)
         return rows
     } catch (e) {
         console.log(e)

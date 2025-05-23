@@ -80,10 +80,13 @@ export const adding_room  = async (data) => {
 
     try{
         session = await database()
-
+        await session.beginTransaction()
         await session.query(`INSERT INTO bernair.room(name, capacity) VALUES(?, ?)`,[name, capacity])
+
+        await session.commit();
     } catch (e) {
         console.log(e)
+        await session.rollback()
         if (e.code === "ER_DUP_ENTRY") {
             return "room exists"
         }
@@ -125,9 +128,12 @@ export const edit_room = async (data) => {
 
     try{
         session = await database()
+        await session.beginTransaction()
         await session.query(`UPDATE bernair.room SET name=?, capacity=? WHERE room_id=?`,[name, capacity, room_id])
+        await session.commit();
     } catch (e) {
         console.log(e)
+        await session.rollback()
         if (e.code === "ER_DUP_ENTRY") {
             return "room exists"
         }

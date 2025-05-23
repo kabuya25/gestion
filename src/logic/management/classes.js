@@ -35,7 +35,6 @@ export const get_classes = async () => {
         return rows
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
         await session.end()
@@ -78,7 +77,6 @@ export const get_classes_join = async () => {
         return rows
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
         await session.end()
@@ -87,7 +85,8 @@ export const get_classes_join = async () => {
 
 export const get_class = async (id) => {
     const class_id = id
-
+    // Ne pas oublier admin verification
+    console.log(class_id)
     if(!parseInt(class_id)){
         return false
     }
@@ -134,7 +133,6 @@ export const get_class = async (id) => {
 
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return true
     } finally {
         await session.end()
@@ -195,9 +193,8 @@ export const check_enough_data = async () => {
     let session
     try{
         session = await database()
-        await session.beginTransaction()
 
-        const [available_room] = await session.query(`SELECT room_id, name FROM bernair.room FOR UPDATE`, [])
+        const [available_room] = await session.query(`SELECT room_id, TRIM(BOTH "\'" FROM name) AS name FROM bernair.room FOR UPDATE`, [])
 
         if(available_room.length < 1){
             return "no room"
@@ -225,10 +222,8 @@ export const check_enough_data = async () => {
 
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
-        await session.commit()
         await session.end()
     }
 
@@ -318,6 +313,7 @@ export const add_class = async (data) => {
 }
 
 export const edit_class = async (data) => {
+
     if(!isAdmin()){
         return false
     }
@@ -421,11 +417,9 @@ export const delete_class = async (id) => {
     try {
         session = await database()
         await session.query(`DELETE FROM bernair.classes WHERE class_id=?`, [class_id])
-        await session.commit()
         return true
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
         await session.end()

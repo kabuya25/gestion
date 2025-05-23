@@ -35,12 +35,10 @@ export const get_reservations = async () => {
             ORDER BY classes.time
         `,[client_id])
 
-        await session.commit()
         return rows
 
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
         await session.end()
@@ -62,14 +60,11 @@ export const delete_reservation = async (id_reservation) => {
 
     try {
         session = await database()
-        await session.beginTransaction()
         await session.query(`DELETE FROM bernair.reservation WHERE reservation_id=? AND id_client=?`, [reservation_id, client_id])
 
-        await session.commit()
         return true
     } catch (e) {
         console.log(e)
-        await session.rollback()
         return false
     } finally {
         await session.end()
