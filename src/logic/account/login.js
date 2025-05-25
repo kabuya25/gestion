@@ -90,6 +90,9 @@ export async function login(data){
         const cookie = await cookies(); // from "next/headers"
         const my_session = await getSession(cookie)
 
+        if (!my_session.cardinal) {
+            my_session.cardinal = {};
+        }
 
         my_session.cardinal.user = {
             id: rows[0].client_id
@@ -151,6 +154,11 @@ export async function admin_login(data){
 
         const cookie = await cookies(); // from "next/headers"
         const my_session = await getSession(cookie);
+
+        if (!my_session.cardinal) {
+            my_session.cardinal = {};
+        }
+
         my_session.cardinal.admin = {
             connected:true
         }
