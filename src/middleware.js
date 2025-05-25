@@ -2,7 +2,7 @@ import { getIronSession } from "iron-session";
 import { NextResponse } from "next/server";
 
  const sessionOptions = {
-    password: process.env.IRON_PASSWORDS,
+    password: "atKISqkboZadJQ0v6fns62GeRHJWTwp1",
     cookieName: 'cardinal',
     cookieOptions: {
         secure: false,

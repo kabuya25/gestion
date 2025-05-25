@@ -4,7 +4,7 @@ import {cookies} from "next/headers";
 
 export function getSession(cookies) {
     const sessionOptions = {
-        password: process.env.IRON_PASSWORDS,
+        password: "atKISqkboZadJQ0v6fns62GeRHJWTwp1",
         cookieName: "cardinal",
         cookieOptions: {
             secure: false,

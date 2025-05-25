@@ -143,9 +143,9 @@ export async function admin_login(data){
             password: data.get("password").trim(),
         }
         console.log(user_info)
-        console.log(user_info.username !== process.env.LOGIN.trim())
+        console.log(user_info.username !== "admin")
 
-        if(user_info.username !== process.env.LOGIN || user_info.password !== process.env.ADMIN_PASSWORD) {
+        if(user_info.username !== "admin" || user_info.password !== "test") {
             return "credentials"
         }
 
