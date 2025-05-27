@@ -14,7 +14,10 @@ import { NextResponse } from "next/server";
 
     const session = await getIronSession(req, res, sessionOptions);
 
-    // Check if user is logged in
+     if (req.nextUrl.pathname.startsWith("/")) {
+         return NextResponse.redirect(new URL("/login", req.url));
+     }
+
     if (!session.cardinal?.user && req.nextUrl.pathname.startsWith("/dashboard")) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -44,5 +47,6 @@ export const config = {
         "/registration",
         "/admin/dashboard/:path*",
         "/admin/login",
+        "/"
     ], // Protect everything under /dashboard
 };
